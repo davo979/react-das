@@ -1,46 +1,89 @@
 import React from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Redirect
+} from 'react-router-dom';
 
-import  Header from './components/Header';
-import  SideBar from './components/SideBar';
-import  Footer from './components/Footer';
-import  Content from './components/Content';
+import Web from './versions/web';
+
+import About from './pages/About';
+import Home from './pages/Home';
+import Contact from './pages/Contact';
+
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+import widthMobileSize from './widthMobileSize';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+
 class App extends React.Component {
-  state = {
-    isVisible: false
-  }
-  constructor(props){
-    super(props);
-    this.handleOnToggle=this.handleOnToggle.bind(this)
-  }
+    state = {
+        isVisible: false
+    }
 
-  handleOnToggle () {
-    this.setState({isVisible: !this.state.isVisible});
-  }
-  render () {
-    return (
-        <Container fluid>
-            <Header onToggleHandler={this.handleOnToggle} />
-                <Row>
-                    {
-                        this.state.isVisible && (
-                            <Col md="3">
-                            <SideBar />
-                        </Col>
-                        )
-                    }
+    constructor(props) {
+        super(props);
+        this.handleOnToggle = this.handleOnToggle.bind(this);
+    }
 
-                  <Col md={this.state.isVisible ? 9 : 12}>
-                    <Content />
-                  </Col>
-                </Row>
-              <Footer />
-        </Container>
-    )
-  }
+    handleOnToggle() {
+        this.setState({isVisible: !this.state.isVisible});
+    }
+
+    render() {
+        return localStorage.getItem('user') ? (
+            <Router>
+                {
+                    this.props.width >= 992 && (
+                        <Web
+                            handleOnToggle={this.handleOnToggle}
+                            isVisible={this.state.isVisible}
+                        >
+                            <Switch>
+                                <Route exact component={Home} path="/" />
+                                <Route component={About} path="/about" />
+                                <Route component={Contact} path="/contact" />
+                                <Redirect from="*" to="/" />
+                            </Switch>
+                        </Web>
+                    )
+                }
+                {
+                    this.props.width < 992 && this.props.width >= 515 && (
+                        <div>
+                            tablet version
+                        </div>
+                    )
+                }
+                {
+                    this.props.width < 515 && (
+                        <div>
+                            mobile version
+                        </div>
+                    )
+                }
+
+            </Router>
+        ) : (
+            <Router>
+                <Web
+                    handleOnToggle={this.handleOnToggle}
+                    isVisible={this.state.isVisible}
+                >
+                    <Switch>
+                        <Route exact component={Login} path="/login" />
+                        <Route component={Register} path="/register" />
+                        <Redirect from="*" to="/login" />
+                    </Switch>
+                </Web>
+            </Router>
+        )
+    }
 }
-export default App;
+
+export default widthMobileSize(App);

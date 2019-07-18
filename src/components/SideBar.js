@@ -1,15 +1,13 @@
 import React from 'react';
 
-// import './SideBar.css';
+import './SideBar.css';
 
 function SideBar() {
-    return(
-        <aside>
-            <p><a href="#">home</a></p>
-            <p><a href="#">menu</a></p>
-            <p><a href="#">news</a></p>
-            <p><a href="#">tests</a></p>
+    return (
+        <aside style={{ background: "red" }}>
+            Side bar
         </aside>
     )
 }
-export default SideBar;
+
+export default SideBar
